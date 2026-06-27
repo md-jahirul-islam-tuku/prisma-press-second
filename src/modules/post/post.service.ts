@@ -43,7 +43,20 @@ const updatePost = async (
   });
   return result;
 };
-const deletePost = async () => {};
+const deletePost = async (
+  postId: string,
+  authorId: string,
+  isAdmin: boolean,
+) => {
+  const post = await prisma.post.findUniqueOrThrow({ where: { id: postId } });
+  if (!isAdmin && post.authorId !== authorId) {
+    throw new Error("You are not the owner of this post!");
+  }
+  const result = await prisma.post.delete({
+    where: { id: postId },
+  });
+  return result;
+};
 const getPostsStats = async () => {};
 const getMyPosts = async (authorId: string) => {
   const myPosts = await prisma.post.findMany({
