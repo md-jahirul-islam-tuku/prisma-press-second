@@ -29,4 +29,10 @@ router.get(
   postController.getPostById,
 );
 
+router.patch(
+  "/:postId",
+  auth(Role.ADMIN, Role.AUTHOR, Role.USER),
+  postController.updatePost,
+);
+
 export const postRoutes = router;
