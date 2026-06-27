@@ -24,3 +24,19 @@ export const Role = {
 } as const
 
 export type Role = (typeof Role)[keyof typeof Role]
+
+
+export const PostStatus = {
+  WITHHELD: 'WITHHELD',
+  PUBLISHED: 'PUBLISHED'
+} as const
+
+export type PostStatus = (typeof PostStatus)[keyof typeof PostStatus]
+
+
+export const CommentStatus = {
+  APPROVED: 'APPROVED',
+  REJECT: 'REJECT'
+} as const
+
+export type CommentStatus = (typeof CommentStatus)[keyof typeof CommentStatus]
