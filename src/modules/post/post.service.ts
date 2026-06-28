@@ -1,3 +1,7 @@
+import {
+  CommentStatus,
+  PostStatus,
+} from "../../../prisma/generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
 import { ICreatePostPayload, IUpdatePostPayload } from "./post.interface";
 
@@ -15,16 +19,41 @@ const getAllPosts = async () => {
   return result;
 };
 const getPostById = async (postId: string) => {
-  const post = await prisma.post.findUnique({ where: { id: postId } });
-  if (!post) {
-    throw new Error("Post not found");
-  }
-  const updatedPost = await prisma.post.update({
-    where: { id: postId },
-    data: { views: { increment: 1 } },
-    include: { author: { select: { name: true } }, comment: true },
+  // await prisma.post.update({
+  //   where: { id: postId },
+  //   data: { views: { increment: 1 } },
+  //   include: { author: { select: { name: true } }, comment: true },
+  // });
+  // const post = await prisma.post.findUniqueOrThrow({ where: { id: postId } });
+  // return post;
+
+  const transactionResult = await prisma.$transaction(async (tx) => {
+    await tx.post.update({
+      where: { id: postId },
+      data: { views: { increment: 1 } },
+    });
+    const post = await tx.post.findUniqueOrThrow({
+      where: { id: postId },
+      include: {
+        author: { select: { name: true } },
+        comment: {
+          where: {
+            status: CommentStatus.APPROVED,
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
+        _count: {
+          select: {
+            comment: true,
+          },
+        },
+      },
+    });
+    return post;
   });
-  return updatedPost;
+  return transactionResult;
 };
 const updatePost = async (
   postId: string,
@@ -57,7 +86,96 @@ const deletePost = async (
   });
   return result;
 };
-const getPostsStats = async () => {};
+const getPostsStats = async () => {
+  const transactionResult = await prisma.$transaction(async (tx) => {
+    // const totalPosts = await tx.post.count();
+    // const totalPublishedPosts = await tx.post.count({
+    //   where: {
+    //     status: PostStatus.PUBLISHED,
+    //   },
+    // });
+    // const totalWithheldPosts = await tx.post.count({
+    //   where: {
+    //     status: PostStatus.WITHHELD,
+    //   },
+    // });
+
+    // const totalComments = await tx.comment.count();
+    // const totalApprovedComments = await tx.comment.count({
+    //   where: {
+    //     status: CommentStatus.APPROVED,
+    //   },
+    // });
+    // const totalRejectedComments = await tx.comment.count({
+    //   where: {
+    //     status: CommentStatus.REJECT,
+    //   },
+    // });
+
+    // const totalPostViewsAggregate = await tx.post.aggregate({
+    //   _sum: { views: true },
+    // });
+    // const totalPostViews = totalPostViewsAggregate._sum.views;
+
+    // return {
+    //   totalPosts,
+    //   totalWithheldPosts,
+    //   totalComments,
+    //   totalRejectedComments,
+    //   totalPostViews,
+    //   totalApprovedComments,
+    //   totalPublishedPosts,
+    // };
+
+    const [
+      totalPosts,
+      totalPublishedPosts,
+      totalWithheldPosts,
+      totalComments,
+      totalApprovedComments,
+      totalRejectedComments,
+      totalPostViewsAggregate,
+    ] = await Promise.all([
+      await tx.post.count(),
+      await tx.post.count({
+        where: {
+          status: PostStatus.PUBLISHED,
+        },
+      }),
+      await tx.post.count({
+        where: {
+          status: PostStatus.WITHHELD,
+        },
+      }),
+
+      await tx.comment.count(),
+      await tx.comment.count({
+        where: {
+          status: CommentStatus.APPROVED,
+        },
+      }),
+      await tx.comment.count({
+        where: {
+          status: CommentStatus.REJECT,
+        },
+      }),
+
+      await tx.post.aggregate({
+        _sum: { views: true },
+      }),
+    ]);
+    return {
+      totalPosts,
+      totalPublishedPosts,
+      totalWithheldPosts,
+      totalComments,
+      totalApprovedComments,
+      totalRejectedComments,
+      totalPostViews: totalPostViewsAggregate._sum.views,
+    };
+  });
+  return transactionResult;
+};
 const getMyPosts = async (authorId: string) => {
   const myPosts = await prisma.post.findMany({
     where: {

@@ -24,6 +24,12 @@ router.get(
 );
 
 router.get(
+  "/stats",
+  auth(Role.ADMIN, Role.AUTHOR, Role.USER),
+  postController.getPostsStats,
+);
+
+router.get(
   "/:postId",
   auth(Role.ADMIN, Role.AUTHOR, Role.USER),
   postController.getPostById,
