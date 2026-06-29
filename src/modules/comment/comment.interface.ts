@@ -1,3 +1,5 @@
+import { CommentStatus } from "../../../generated/prisma/enums";
+
 export interface ICreateCommentPayload {
   postId: string;
   authorId: string;
@@ -5,6 +7,10 @@ export interface ICreateCommentPayload {
 }
 
 export interface IUpdateCommentPayload {
-  authorId: string;
-  content: string;
+  content?: string;
+  status?: CommentStatus;
+}
+
+export interface ICommentUpdateToModerate {
+  status: CommentStatus;
 }

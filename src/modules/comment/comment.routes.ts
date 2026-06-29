@@ -10,7 +10,7 @@ router.get("/author/:authorId", auth(Role.ADMIN, Role.AUTHOR, Role.USER), commen
 router.get("/:commentId", auth(Role.ADMIN, Role.AUTHOR, Role.USER), commentController.getCommentById);
 router.patch("/:commentId", auth(Role.ADMIN, Role.AUTHOR, Role.USER), commentController.updateComment);
 router.delete("/:commentId", auth(Role.ADMIN, Role.AUTHOR, Role.USER), commentController.deleteComment);
-router.patch("/:commentId/moderate", auth(Role.ADMIN), commentController.updateCommentToModerate);
+router.put("/:commentId/moderate", auth(Role.ADMIN), commentController.updateCommentToModerate);
 
 export const commentRoutes = router;
 
