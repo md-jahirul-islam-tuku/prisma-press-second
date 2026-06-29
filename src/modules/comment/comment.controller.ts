@@ -23,18 +23,41 @@ const getCommentByAuthor = catchAsync(
     sendResponse(res, {
       success: true,
       statusCode: httpStatus.OK,
-      message: "Comment retrieved successfully",
+      message: "Comments retrieved successfully",
       data: result,
     });
   },
 );
 
 const getCommentById = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {},
+  async (req: Request, res: Response, next: NextFunction) => {
+    const commentId = req.params.commentId as string;
+    const result = await commentService.getCommentById(commentId);
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Comment retrieved successfully",
+      data: result,
+    });
+  },
 );
 
 const updateComment = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {},
+  async (req: Request, res: Response, next: NextFunction) => {
+    const authorId = req.user?.id as string;
+    const commentId = req.params.commentId as string;
+    const result = await commentService.updateComment(
+      authorId,
+      commentId,
+      req.body,
+    );
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Comment updated successfully",
+      data: result,
+    });
+  },
 );
 
 const deleteComment = catchAsync(

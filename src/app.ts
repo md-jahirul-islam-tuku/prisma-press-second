@@ -1,3 +1,4 @@
+import httpStatus from "http-status";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, { Application, Request, Response } from "express";
@@ -6,6 +7,7 @@ import { userRoutes } from "./modules/user/user.route";
 import { authRoutes } from "./modules/auth/auth.routes";
 import { commentRoutes } from "./modules/comment/comment.routes";
 import { postRoutes } from "./modules/post/post.routes";
+import { prisma } from "./lib/prisma";
 
 const app: Application = express();
 
@@ -29,15 +31,15 @@ app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/comments", commentRoutes);
 
-// app.get("/api/users", async (req: Request, res: Response) => {
-//   const user = await prisma.user.findMany();
-//   console.log(user);
-//   res.status(httpStatus.CREATED).json({
-//     success: true,
-//     statusCode: httpStatus.CREATED,
-//     message: "User registered successfully",
-//     data: { user },
-//   });
-// });
+app.get("/api/users", async (req: Request, res: Response) => {
+  const user = await prisma.user.findMany();
+  console.log(user);
+  res.status(httpStatus.CREATED).json({
+    success: true,
+    statusCode: httpStatus.CREATED,
+    message: "User registered successfully",
+    data: { user },
+  });
+});
 
 export default app;

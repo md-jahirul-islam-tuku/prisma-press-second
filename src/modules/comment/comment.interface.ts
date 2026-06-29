@@ -3,3 +3,8 @@ export interface ICreateCommentPayload {
   authorId: string;
   content: string;
 }
+
+export interface IUpdateCommentPayload {
+  authorId: string;
+  content: string;
+}
