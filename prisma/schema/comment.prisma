@@ -5,11 +5,11 @@ model Comment {
   author    User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
   postId    String
   post      Post          @relation(fields: [postId], references: [id], onDelete: Cascade)
-  status    CommentStatus
+  status    CommentStatus @default(APPROVED)
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
 
-  @@index([authorId])
   @@index([postId])
+  @@index([authorId])
   @@map("comments")
 }

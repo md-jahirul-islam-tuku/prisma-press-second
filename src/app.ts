@@ -26,8 +26,8 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
-app.use("/api/comments", commentRoutes);
 app.use("/api/posts", postRoutes);
+app.use("/api/comments", commentRoutes);
 
 // app.get("/api/users", async (req: Request, res: Response) => {
 //   const user = await prisma.user.findMany();

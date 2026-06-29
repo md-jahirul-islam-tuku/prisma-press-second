@@ -3,11 +3,11 @@ import { NextFunction, Request, Response, Router } from "express";
 import { userController } from "./user.controller";
 import { jwtUtils } from "../../utils/jwt";
 import config from "../../config";
-import { Role } from "../../../prisma/generated/prisma/enums";
 import { catchAsync } from "../../utils/catchAsync";
 import { JwtPayload } from "jsonwebtoken";
 import { prisma } from "../../lib/prisma";
 import { auth } from "../../middlewares/auth";
+import { Role } from "../../../generated/prisma/enums";
 
 const router = Router();
 
