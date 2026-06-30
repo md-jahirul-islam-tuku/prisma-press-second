@@ -1,4 +1,3 @@
-
 import { CommentStatus, PostStatus } from "../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
 import { ICreatePostPayload, IUpdatePostPayload } from "./post.interface";
@@ -12,6 +11,64 @@ const createPost = async (payload: ICreatePostPayload, userId: string) => {
 
 const getAllPosts = async () => {
   const result = await prisma.post.findMany({
+    // where: {
+    //   //* filtering
+    //   // AND: [
+    //   //   {
+    //   //     title: "My First Post",
+    //   //   },
+    //   //   {
+    //   //     content:"kaka"
+    //   //   }
+    //   // ],
+    //   // *searching
+    //   // OR: [
+    //   //   {
+    //   //     title: {
+    //   //       contains: "first",
+    //   //       mode: "insensitive",
+    //   //     },
+    //   //   },
+    //   //   {
+    //   //     content: {
+    //   //       contains: "Post",
+    //   //       mode: "insensitive",
+    //   //     },
+    //   //   },
+    //   // ],
+    //   // * filtering and searching combined
+    //   AND: [
+    //     // * searching
+    //     {
+    //       OR: [
+    //         {
+    //           title: {
+    //             contains: "first",
+    //             mode: "insensitive",
+    //           },
+    //         },
+    //         {
+    //           content: {
+    //             contains: "content",
+    //             mode: "insensitive",
+    //           },
+    //         },
+    //       ],
+    //     },
+
+    //     // * filtering
+    //     {
+    //       title: "My First Post",
+    //     },
+    //     {
+    //       content: "kaka",
+    //     },
+    //   ],
+    // },
+
+    take: 1,
+    skip: 1,
+
     include: { author: { select: { name: true } }, comment: true },
   });
   return result;

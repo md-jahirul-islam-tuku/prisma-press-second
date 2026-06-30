@@ -16,6 +16,7 @@ const createComment = catchAsync(
     });
   },
 );
+
 const getCommentByAuthor = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const authorId = req.params.authorId as string;
